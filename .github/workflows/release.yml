@@ -24,6 +24,8 @@ jobs:
       CODEBERG_TOKEN: ${{ secrets.CODEBERG_TOKEN }}
     steps:
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0   # need tags so re-runs use the tagged commit's notes
 
       - name: Work out version
         id: ver
@@ -75,7 +77,9 @@ jobs:
       - name: Write release notes
         # "What's new" shown in the app = the message of the tagged commit
         run: |
-          git log -1 --format=%B > notes.md
+          V="${{ steps.ver.outputs.version }}"
+          # Prefer the tagged commit (so manual re-runs keep the original "What's new")
+          git log -1 --format=%B "v${V}" > notes.md 2>/dev/null || git log -1 --format=%B > notes.md
           echo "" >> notes.md
           echo "_Install: download ShirleyFlix-${{ steps.ver.outputs.version }}.apk below._" >> notes.md
 
