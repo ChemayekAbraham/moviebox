@@ -1,0 +1,29 @@
+# Signing secrets — never commit
+*.jks
+*.keystore
+keystore.properties
+
+# Android / Gradle
+.gradle/
+build/
+app/build/
+local.properties
+captures/
+*.apk
+*.aab
+*.idsig
+.externalNativeBuild/
+.cxx/
+
+# Original MovieBox package (reference only)
+base_extracted/
+
+# IDE / OS
+.idea/
+.vscode/
+*.iml
+.DS_Store
+
+# Web
+node_modules/
+dist/

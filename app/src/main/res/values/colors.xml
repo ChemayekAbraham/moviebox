@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#E50914</color>
+    <color name="primary_dark">#B80710</color>
+    <color name="primary_variant">#FF1E27</color>
+    <color name="accent">#E50914</color>
+    
+    <color name="background_dark">#0D0E15</color>
+    <color name="surface_dark">#181A24</color>
+    <color name="surface_card">#222533</color>
+    
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#9CA3AF</color>
+    <color name="text_muted">#6B7280</color>
+    
+    <color name="status_bar">#0D0E15</color>
+    <color name="nav_bar">#0D0E15</color>
+    
+    <color name="progress_track">#1F2937</color>
+    <color name="progress_indicator">#E50914</color>
+
+    <color name="vip_gold">#F59E0B</color>
+</resources>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MovieBox - Watch Movies, TV Shows, Anime & FightZone Online Free</title>
+  <meta name="description" content="Stream high-definition movies, series, anime, and live combat on MovieBox web. Modern responsive streaming web app with zero ads." />
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="navbar" id="navbar">
+    <a class="brand" id="brandLogo">
+      <div class="brand-icon">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      </div>
+      <span class="brand-text">MovieBox</span>
+      <span class="brand-badge">H5 Stream</span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a class="nav-link active" data-category="all">Home</a></li>
+      <li><a class="nav-link" data-category="trending">Trending</a></li>
+      <li><a class="nav-link" data-category="movies">Movies</a></li>
+      <li><a class="nav-link" data-category="tv">TV Shows</a></li>
+      <li><a class="nav-link" data-category="fightzone">FightZone</a></li>
+      <li><a class="nav-link" data-category="anime">Anime</a></li>
+      <li><a class="nav-link" data-category="nollywood">Nollywood</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <div class="search-box">
+        <span class="search-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </span>
+        <input type="text" id="searchInput" placeholder="Search titles, actors, genres... (/)" />
+      </div>
+
+      <button class="btn-icon" id="btnWatchlist" title="My Watchlist">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <span class="badge-count" id="watchlistCount">0</span>
+      </button>
+
+      <button class="btn-icon" id="btnMirrorSwitch" title="Switch Mirror Server">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <polyline points="1 20 1 14 7 14"></polyline>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Hero Billboard Section -->
+  <section class="hero" id="heroBanner">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-badge-row">
+        <span class="tag-badge" id="heroBadge">Featured Blockbuster</span>
+        <div class="rating-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#fbbf24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <span id="heroRating">8.6</span>
+        </div>
+        <div class="meta-info">
+          <span id="heroYear">2024</span>
+          <span>•</span>
+          <span id="heroDuration">2h 46m</span>
+          <span>•</span>
+          <span class="quality-badge" id="heroQuality">4K UHD</span>
+        </div>
+      </div>
+
+      <h1 class="hero-title" id="heroTitle">Dune: Part Two</h1>
+      <p class="hero-tagline" id="heroTagline">Long live the fighters.</p>
+      <p class="hero-synopsis" id="heroSynopsis">Paul Atreides unites with Chani and the Fremen while seeking revenge against the conspirators who destroyed his family. Facing a choice between the love of his life and the fate of the universe.</p>
+
+      <div class="hero-buttons">
+        <button class="btn-primary" id="heroPlayBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+          Play Movie
+        </button>
+        <button class="btn-secondary" id="heroListBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          <span>My List</span>
+        </button>
+        <button class="btn-secondary" id="heroDetailsBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          More Info
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filter Chips Bar -->
+  <div class="filter-bar" id="categoryFilterBar"></div>
+
+  <!-- Main Content Showcase -->
+  <main class="main-content" id="mainContent">
+    <!-- Movie rows will be injected dynamically -->
+  </main>
+
+  <!-- Video Player & Details Modal -->
+  <div class="modal-backdrop" id="playerModal">
+    <div class="modal-card">
+      <button class="modal-close-btn" id="modalCloseBtn" title="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+
+      <div class="player-container">
+        <video id="streamVideo" class="player-video" controls playsinline preload="metadata" poster="">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+
+      <div class="modal-body">
+        <div class="server-bar">
+          <span style="font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Stream Server:</span>
+          <button class="server-btn active" data-server="1">Server 1 (H5 FastStream)</button>
+          <button class="server-btn" data-server="2">Server 2 (Alpha 4K CDN)</button>
+          <button class="server-btn" data-server="3">Server 3 (Cloud Mirror)</button>
+          <button class="server-btn" id="btnDownloadMovie" style="margin-left:auto; background:var(--primary); color:#fff;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle; margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Download HD
+          </button>
+        </div>
+
+        <div class="modal-info-grid">
+          <div>
+            <h2 class="modal-info-title" id="modalMovieTitle">Movie Title</h2>
+            <div class="meta-info" style="margin-bottom:12px;">
+              <span id="modalMovieYear">2024</span>
+              <span>•</span>
+              <span id="modalMovieDuration">2h 30m</span>
+              <span>•</span>
+              <span class="rating-badge" id="modalMovieRating">⭐ 8.5</span>
+            </div>
+            <p class="modal-info-synopsis" id="modalMovieSynopsis">Synopsis text goes here...</p>
+          </div>
+
+          <div class="modal-side-meta">
+            <div class="meta-group">
+              <span>Director</span>
+              <p id="modalMovieDirector" style="font-weight:600; color:#fff;">Denis Villeneuve</p>
+            </div>
+            <div class="meta-group">
+              <span>Cast</span>
+              <p id="modalMovieCast" style="color:var(--text-secondary);">Timothée Chalamet, Zendaya</p>
+            </div>
+            <div class="meta-group">
+              <span>Genres</span>
+              <div class="genre-tags" id="modalMovieGenres"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Watchlist Drawer -->
+  <div class="drawer-backdrop" id="watchlistBackdrop"></div>
+  <aside class="drawer" id="watchlistDrawer">
+    <div class="drawer-header">
+      <h3 style="font-family:var(--font-heading); font-size:20px; font-weight:800;">My Watchlist</h3>
+      <button class="modal-close-btn" id="watchlistCloseBtn" style="position:static;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="drawer-list" id="watchlistContainer">
+      <!-- Items dynamically populated -->
+    </div>
+  </aside>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-status">
+      <span class="status-dot"></span>
+      <span>H5 Streaming CDN Online • Latency 24ms</span>
+    </div>
+    <p>MovieBox Web Application • Engineered for high-speed video streaming & entertainment on any screen.</p>
+    <p style="color:var(--text-muted); font-size:11px;">Data sources & media streams powered by H5 CDN & Open Media Archives.</p>
+  </footer>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

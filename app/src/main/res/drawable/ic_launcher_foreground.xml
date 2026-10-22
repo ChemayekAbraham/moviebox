@@ -1,0 +1,14 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+  <!-- Red Rounded Cinema Box Background -->
+  <path
+      android:fillColor="#E50914"
+      android:pathData="M32,24h44c6.63,0 12,5.37 12,12v36c0,6.63 -5.37,12 -12,12H32c-6.63,0 -12,-5.37 -12,-12V36c0,-6.63 5.37,-12 12,-12z"/>
+  <!-- White Play Arrow in center -->
+  <path
+      android:fillColor="#FFFFFF"
+      android:pathData="M46,38l22,16 -22,16z"/>
+</vector>
