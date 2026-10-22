@@ -109,12 +109,24 @@ jobs:
         run: |
           API="https://codeberg.org/api/v1/repos/ChemayekAbraham/moviebox_updates"
           APK="out/ShirleyFlix-${V}.apk"
-          BODY=$(python3 -c 'import json,os; print(json.dumps({"tag_name":"v"+os.environ["V"],"name":"Update "+os.environ["V"],"body":open("notes.md").read(),"target_commitish":"main"}))')
-          ID=$(curl -sfS -X POST "$API/releases" \
-                 -H "Authorization: token $CODEBERG_TOKEN" -H "Content-Type: application/json" \
-                 -d "$BODY" | python3 -c 'import json,sys; print(json.load(sys.stdin)["id"])')
-          curl -sfS -X POST "$API/releases/$ID/assets?name=ShirleyFlix-${V}.apk" \
-               -H "Authorization: token $CODEBERG_TOKEN" -F "attachment=@${APK}" > /dev/null
+          AUTH="Authorization: token $CODEBERG_TOKEN"
+          fail() { echo "::warning title=Codeberg backup not updated::$1"; exit 1; }
+
+          # Reuse the release if this version was published before, otherwise create it
+          ID=$(curl -s -H "$AUTH" "$API/releases/tags/v${V}" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("id",""))' 2>/dev/null)
+          if [ -z "$ID" ]; then
+            BODY=$(python3 -c 'import json,os; print(json.dumps({"tag_name":"v"+os.environ["V"],"name":"Update "+os.environ["V"],"body":open("notes.md").read(),"target_commitish":"main"}))')
+            RESP=$(curl -s -w '\n%{http_code}' -X POST "$API/releases" -H "$AUTH" -H "Content-Type: application/json" -d "$BODY")
+            CODE=$(echo "$RESP" | tail -n1); JSON=$(echo "$RESP" | sed '$d')
+            [ "$CODE" = "201" ] || fail "Create release failed (HTTP $CODE): $JSON  -  check that Releases are enabled in the Codeberg repo settings and the token has repository read/write."
+            ID=$(echo "$JSON" | python3 -c 'import json,sys; print(json.load(sys.stdin)["id"])')
+          fi
+
+          # Replace an existing APK with the same name, then upload
+          OLD=$(curl -s -H "$AUTH" "$API/releases/$ID/assets" | python3 -c 'import json,sys,os; print(" ".join(str(a["id"]) for a in json.load(sys.stdin) if a["name"]=="ShirleyFlix-"+os.environ["V"]+".apk"))' 2>/dev/null)
+          for A in $OLD; do curl -s -X DELETE -H "$AUTH" "$API/releases/$ID/assets/$A" > /dev/null; done
+          CODE=$(curl -s -o /tmp/up.json -w '%{http_code}' -X POST "$API/releases/$ID/assets?name=ShirleyFlix-${V}.apk" -H "$AUTH" -F "attachment=@${APK}")
+          [ "$CODE" = "201" ] || fail "APK upload failed (HTTP $CODE): $(cat /tmp/up.json)"
           echo "Published v${V} to Codeberg (release $ID)"
 
       - name: Clean up key
