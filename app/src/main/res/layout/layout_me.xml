@@ -47,26 +47,13 @@
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:background="@drawable/bg_vip_badge"
-                    android:paddingStart="10dp"
-                    android:paddingTop="3dp"
-                    android:paddingEnd="10dp"
-                    android:paddingBottom="3dp"
-                    android:text="👑 VIP LIFETIME"
-                    android:textColor="#1A1200"
-                    android:textSize="11sp"
-                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tvProfileId"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
-                    android:text="ID: 88888888"
+                    android:text=""
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp" />
 
@@ -75,7 +62,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="Expires: 30 JAN 3000"
+                    android:text=""
+                    android:visibility="gone"
                     android:textColor="@color/vip_gold"
                     android:textSize="12sp"
                     android:textStyle="bold" />

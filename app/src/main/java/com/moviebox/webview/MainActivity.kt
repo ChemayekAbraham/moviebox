@@ -40,6 +40,10 @@ import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity() {
 
+    companion object {
+        private const val PROFILE_NAME = "DJ SHIRLEY BEATS"
+    }
+
     private lateinit var binding: ActivityMainBinding
     private lateinit var chromeClient: VideoWebChromeClient
 
@@ -102,10 +106,10 @@ class MainActivity : AppCompatActivity() {
         warnIfWebViewOutdated()
         if (isNetworkAvailable()) UpdateChecker.check(this)
 
-        // Remove any profile data that previously leaked onto betting/ad sites,
-        // then inject the VIP profile ONLY on MovieBox domains and start loading.
+        // Remove any profile data that previously leaked onto betting/ad sites, wipe the fake
+        // VIP login older versions planted, then start loading.
         purgeLeakedSiteData {
-            HostPolicy.MOVIEBOX_HOSTS.forEach { VIPAccountInjector.injectCookies(it) }
+            LegacyVipCleanup.clearCookiesOnce(this, HostPolicy.MOVIEBOX_HOSTS)
             if (isNetworkAvailable()) {
                 loadUrl(mirrorUrls[currentMirrorIndex])
             } else {
@@ -329,7 +333,7 @@ class MainActivity : AppCompatActivity() {
         private fun enqueueFromPage(src: String, title: String?, quality: String?, pageUrl: String?, quiet: Boolean) {
             runOnUiThread {
                 if (!HostPolicy.isMovieBoxHost(binding.webView.url)) return@runOnUiThread
-                val base = (title?.takeIf { it.isNotBlank() } ?: "MovieBox video")
+                val base = (title?.takeIf { it.isNotBlank() } ?: "${getString(R.string.app_name)} video")
                     .replace(Regex("[\\\\/:*?\"<>|]"), " ").trim()
                 val q = quality?.takeIf { it.isNotBlank() }?.let { " [$it]" } ?: ""
                 val ext = if (src.substringBefore('?').endsWith(".mkv", true)) "mkv" else "mp4"
@@ -438,7 +442,7 @@ class MainActivity : AppCompatActivity() {
                 setTitle(fileName)
                 setDescription(getString(R.string.download_started))
                 setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "MovieBox/$fileName")
+                setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "${getString(R.string.app_name)}/$fileName")
             }
 
             val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
@@ -452,10 +456,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /** VIP profile is injected ONLY on MovieBox pages; ad cleaning runs on every trusted page. */
+    /** Download tools run ONLY on MovieBox pages; ad cleaning runs on every trusted page. */
     private fun injectScripts(view: WebView?, url: String?) {
         if (HostPolicy.isMovieBoxHost(url)) {
-            view?.evaluateJavascript(VIPAccountInjector.INJECTION_SCRIPT, null)
+            view?.evaluateJavascript(LegacyVipCleanup.STORAGE_CLEANUP_JS, null)
             view?.evaluateJavascript(VideoDownloadInjector.SCRIPT, null)
             view?.evaluateJavascript(PlayerAutoHideFix.SCRIPT, null)
             // Self-gated: only acts if the site's own JavaScript failed to start (old WebView)
@@ -572,9 +576,9 @@ class MainActivity : AppCompatActivity() {
     // ---------------------------------------------------------------------------------------
 
     private fun setupBottomNav() {
-        binding.meScreen.tvProfileName.text = VIPAccountInjector.USER_NAME
-        binding.meScreen.tvProfileId.text = "ID: Enjoy the App  •  Premium • Unlimited"
-        binding.meScreen.tvProfileExpiry.text = "Expires: 30th JAN 3000"
+        binding.meScreen.tvProfileName.text = PROFILE_NAME
+        binding.meScreen.tvProfileId.text = "${getString(R.string.app_name)}  •  Offline downloads"
+        binding.meScreen.tvProfileExpiry.visibility = View.GONE
 
         binding.bottomNav.setOnItemSelectedListener { item ->
             if (item.itemId == R.id.nav_me) {

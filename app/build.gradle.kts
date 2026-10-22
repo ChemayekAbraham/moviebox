@@ -10,7 +10,7 @@ plugins {
  * GitHub Actions overrides it from the tag, so the tag and the app version always match.
  * versionCode is derived from it (1.3 -> 10300, 1.3.1 -> 10301) so it always increases.
  */
-val appVersion: String = (System.getenv("APP_VERSION") ?: "1.4").removePrefix("v")
+val appVersion: String = (System.getenv("APP_VERSION") ?: "1.5").removePrefix("v")
 val appVersionCode: Int = appVersion.split(".").map { it.toIntOrNull() ?: 0 }
     .let { p -> (p.getOrElse(0) { 0 } * 10000) + (p.getOrElse(1) { 0 } * 100) + p.getOrElse(2) { 0 } }
 

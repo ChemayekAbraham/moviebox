@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">MovieBox</string>
+    <string name="app_name">ShirleyFlix</string>
     <string name="offline_title">You\'re Offline</string>
-    <string name="offline_message">Unable to reach MovieBox servers. Check your internet connection or switch to an alternate mirror.</string>
+    <string name="offline_message">Unable to reach the servers. Check your internet connection or switch to an alternate mirror.</string>
     <string name="retry">Retry Connection</string>
     <string name="switch_mirror">Switch Mirror</string>
-    <string name="loading">Loading MovieBox...</string>
+    <string name="loading">Loading ShirleyFlix...</string>
     <string name="download_started">Download started...</string>
     <string name="press_again_to_exit">Press back again to exit</string>
 </resources>

@@ -19,6 +19,9 @@ jobs:
   release:
     # Pinned: this image ships with the Android SDK preinstalled
     runs-on: ubuntu-24.04
+    env:
+      # Optional backup host; the Codeberg step is skipped when this secret is not set
+      CODEBERG_TOKEN: ${{ secrets.CODEBERG_TOKEN }}
     steps:
       - uses: actions/checkout@v5
 
@@ -67,14 +70,14 @@ jobs:
           chmod +x gradlew
           ./gradlew :app:assembleRelease --no-daemon
           mkdir -p out
-          cp app/build/outputs/apk/release/app-release.apk "out/MovieBox-${APP_VERSION}.apk"
+          cp app/build/outputs/apk/release/app-release.apk "out/ShirleyFlix-${APP_VERSION}.apk"
 
       - name: Write release notes
         # "What's new" shown in the app = the message of the tagged commit
         run: |
           git log -1 --format=%B > notes.md
           echo "" >> notes.md
-          echo "_Install: download MovieBox-${{ steps.ver.outputs.version }}.apk below._" >> notes.md
+          echo "_Install: download ShirleyFlix-${{ steps.ver.outputs.version }}.apk below._" >> notes.md
 
       # Public, releases-only repo that installed apps check (no source code is published there)
       - name: Publish to public updates repo
@@ -85,7 +88,7 @@ jobs:
           tag_name: v${{ steps.ver.outputs.version }}
           name: Update ${{ steps.ver.outputs.version }}
           body_path: notes.md
-          files: out/MovieBox-${{ steps.ver.outputs.version }}.apk
+          files: out/ShirleyFlix-${{ steps.ver.outputs.version }}.apk
 
       # Transition: apps on 1.3 still check this repo. Harmless once this repo is private.
       - name: Publish to this repo
@@ -94,7 +97,25 @@ jobs:
           tag_name: v${{ steps.ver.outputs.version }}
           name: Update ${{ steps.ver.outputs.version }}
           body_path: notes.md
-          files: out/MovieBox-${{ steps.ver.outputs.version }}.apk
+          files: out/ShirleyFlix-${{ steps.ver.outputs.version }}.apk
+
+      # Independent backup: if GitHub removes moviebox_updates, apps fall back to Codeberg.
+      # Never fails the release.
+      - name: Publish to Codeberg (backup)
+        if: env.CODEBERG_TOKEN != ''
+        continue-on-error: true
+        env:
+          V: ${{ steps.ver.outputs.version }}
+        run: |
+          API="https://codeberg.org/api/v1/repos/ChemayekAbraham/moviebox_updates"
+          APK="out/ShirleyFlix-${V}.apk"
+          BODY=$(python3 -c 'import json,os; print(json.dumps({"tag_name":"v"+os.environ["V"],"name":"Update "+os.environ["V"],"body":open("notes.md").read(),"target_commitish":"main"}))')
+          ID=$(curl -sfS -X POST "$API/releases" \
+                 -H "Authorization: token $CODEBERG_TOKEN" -H "Content-Type: application/json" \
+                 -d "$BODY" | python3 -c 'import json,sys; print(json.load(sys.stdin)["id"])')
+          curl -sfS -X POST "$API/releases/$ID/assets?name=ShirleyFlix-${V}.apk" \
+               -H "Authorization: token $CODEBERG_TOKEN" -F "attachment=@${APK}" > /dev/null
+          echo "Published v${V} to Codeberg (release $ID)"
 
       - name: Clean up key
         if: always()

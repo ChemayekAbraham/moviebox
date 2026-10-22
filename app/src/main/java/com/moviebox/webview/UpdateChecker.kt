@@ -34,11 +34,14 @@ object UpdateChecker {
 
     /**
      * Where releases are published, in priority order. The code lives in a private repo;
-     * only APKs + release notes are published to the public `moviebox_updates` repo.
-     * The old repo is a harmless fallback (it returns 404 once it is private).
+     * only APKs + release notes are published to the public `moviebox_updates` repos.
+     * Codeberg is an independent backup: if GitHub removes the updates repo, apps still update.
+     * The old code repo is a harmless fallback (it returns 404 once it is private).
+     * All use the same JSON shape (tag_name, body, assets[].browser_download_url).
      */
     private val RELEASE_SOURCES = listOf(
         "https://api.github.com/repos/ChemayekAbraham/moviebox_updates/releases/latest",
+        "https://codeberg.org/api/v1/repos/ChemayekAbraham/moviebox_updates/releases/latest",
         "https://api.github.com/repos/ChemayekAbraham/moviebox/releases/latest"
     )
     private const val PREFS = "updater"
@@ -97,7 +100,7 @@ object UpdateChecker {
             connectTimeout = 10_000
             readTimeout = 10_000
             setRequestProperty("Accept", "application/vnd.github+json")
-            setRequestProperty("User-Agent", "MovieBoxApp-Updater")
+            setRequestProperty("User-Agent", "ShirleyFlix-Updater")
         }
         try {
             if (conn.responseCode != 200) return null
@@ -144,7 +147,7 @@ object UpdateChecker {
         val id = try {
             dm.enqueue(
                 DownloadManager.Request(Uri.parse(r.apkUrl))
-                    .setTitle("MovieBox update ${r.version}")
+                    .setTitle("${activity.getString(R.string.app_name)} update ${r.version}")
                     .setMimeType("application/vnd.android.package-archive")
                     .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
                     .setDestinationInExternalFilesDir(activity, Environment.DIRECTORY_DOWNLOADS, fileName)
@@ -214,7 +217,7 @@ object UpdateChecker {
             pendingApk = apk
             AlertDialog.Builder(activity)
                 .setTitle("One more step")
-                .setMessage("To install updates, allow MovieBox to install apps. Turn on \"Allow from this source\", then come back.")
+                .setMessage("To install updates, allow ${activity.getString(R.string.app_name)} to install apps. Turn on \"Allow from this source\", then come back.")
                 .setPositiveButton("Open settings") { _, _ ->
                     activity.startActivity(
                         Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:${activity.packageName}"))
