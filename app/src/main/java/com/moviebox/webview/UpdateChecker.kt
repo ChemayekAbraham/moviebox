@@ -32,8 +32,15 @@ import java.util.concurrent.Executors
  */
 object UpdateChecker {
 
-    private const val REPO = "ChemayekAbraham/moviebox"
-    private const val LATEST_RELEASE_API = "https://api.github.com/repos/$REPO/releases/latest"
+    /**
+     * Where releases are published, in priority order. The code lives in a private repo;
+     * only APKs + release notes are published to the public `moviebox-updates` repo.
+     * The old repo is a harmless fallback (it returns 404 once it is private).
+     */
+    private val RELEASE_SOURCES = listOf(
+        "https://api.github.com/repos/ChemayekAbraham/moviebox-updates/releases/latest",
+        "https://api.github.com/repos/ChemayekAbraham/moviebox/releases/latest"
+    )
     private const val PREFS = "updater"
     private const val CHECK_INTERVAL_MS = 3 * 60 * 60 * 1000L // at most every 3 hours
 
@@ -80,8 +87,13 @@ object UpdateChecker {
 
     // ---------------------------------------------------------------- GitHub
 
-    private fun fetchLatest(): Release? {
-        val conn = (URL(LATEST_RELEASE_API).openConnection() as HttpURLConnection).apply {
+    /** Newest release across all sources (null if none reachable). */
+    private fun fetchLatest(): Release? =
+        RELEASE_SOURCES.mapNotNull { url -> try { fetchFrom(url) } catch (e: Exception) { null } }
+            .maxWithOrNull { a, b -> compareVersions(a.version, b.version) }
+
+    private fun fetchFrom(apiUrl: String): Release? {
+        val conn = (URL(apiUrl).openConnection() as HttpURLConnection).apply {
             connectTimeout = 10_000
             readTimeout = 10_000
             setRequestProperty("Accept", "application/vnd.github+json")

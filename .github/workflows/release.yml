@@ -69,12 +69,31 @@ jobs:
           mkdir -p out
           cp app/build/outputs/apk/release/app-release.apk "out/MovieBox-${APP_VERSION}.apk"
 
-      - name: Publish GitHub Release
+      - name: Write release notes
+        # "What's new" shown in the app = the message of the tagged commit
+        run: |
+          git log -1 --format=%B > notes.md
+          echo "" >> notes.md
+          echo "_Install: download MovieBox-${{ steps.ver.outputs.version }}.apk below._" >> notes.md
+
+      # Public, releases-only repo that installed apps check (no source code is published there)
+      - name: Publish to public updates repo
+        uses: softprops/action-gh-release@v2
+        with:
+          repository: ChemayekAbraham/moviebox-updates
+          token: ${{ secrets.UPDATES_REPO_TOKEN }}
+          tag_name: v${{ steps.ver.outputs.version }}
+          name: Update ${{ steps.ver.outputs.version }}
+          body_path: notes.md
+          files: out/MovieBox-${{ steps.ver.outputs.version }}.apk
+
+      # Transition: apps on 1.3 still check this repo. Harmless once this repo is private.
+      - name: Publish to this repo
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.ver.outputs.version }}
           name: Update ${{ steps.ver.outputs.version }}
-          generate_release_notes: true
+          body_path: notes.md
           files: out/MovieBox-${{ steps.ver.outputs.version }}.apk
 
       - name: Clean up key
