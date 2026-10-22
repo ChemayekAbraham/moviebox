@@ -80,7 +80,7 @@ jobs:
       - name: Publish to public updates repo
         uses: softprops/action-gh-release@v2
         with:
-          repository: ChemayekAbraham/moviebox-updates
+          repository: ChemayekAbraham/moviebox_updates
           token: ${{ secrets.UPDATES_REPO_TOKEN }}
           tag_name: v${{ steps.ver.outputs.version }}
           name: Update ${{ steps.ver.outputs.version }}

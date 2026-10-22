@@ -34,11 +34,11 @@ object UpdateChecker {
 
     /**
      * Where releases are published, in priority order. The code lives in a private repo;
-     * only APKs + release notes are published to the public `moviebox-updates` repo.
+     * only APKs + release notes are published to the public `moviebox_updates` repo.
      * The old repo is a harmless fallback (it returns 404 once it is private).
      */
     private val RELEASE_SOURCES = listOf(
-        "https://api.github.com/repos/ChemayekAbraham/moviebox-updates/releases/latest",
+        "https://api.github.com/repos/ChemayekAbraham/moviebox_updates/releases/latest",
         "https://api.github.com/repos/ChemayekAbraham/moviebox/releases/latest"
     )
     private const val PREFS = "updater"
